@@ -72,8 +72,6 @@ if (!class_exists('WPRadarHelper')) :
 		public static function get_signature($vuln_id, $secret_key) {
 			return hash('sha256', $vuln_id . 'wp_radar' . $secret_key);
 		}
-
-
 	}
 endif;
 ?>
