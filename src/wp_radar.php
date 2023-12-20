@@ -5,7 +5,7 @@ Plugin Name: WP-Radar
 Plugin URI: https://www.malcare.com/blog/introducing-wp-radar/
 Description: This is a plugin to test the Security of the website.
 Version: 1.0
-Author: Sumit Sharma
+Author: MalCare Security
  */
 
 if (!defined('ABSPATH')) exit;
