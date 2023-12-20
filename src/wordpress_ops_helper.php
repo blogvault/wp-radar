@@ -56,6 +56,14 @@ if (!class_exists('WordpressOpsHelper')) :
 			global $wpdb;
 			return $wpdb->prefix;
 		}
+
+		public static function isCurrentUserAdmin() {
+			return current_user_can('manage_options');
+		}
+
+		public static function isWPAdminPage() {
+			return is_admin();
+		}
   }
 endif;
 ?>

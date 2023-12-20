@@ -9,7 +9,7 @@ if (!class_exists('WPRadarInfo')) :
 		public $slug = 'wp_radar/wp_radar.php';
 		public $logo = '/img/bvlogo.svg';
 		public $brand_icon = '/img/icon.png';
-		public $author = 'Sumit Sharma';
+		public $author = 'Malcare Security';
 		public $title = 'WordPress Security Testing Plugin - BlogVault';
 		public static $secret_key_name = 'wp_radar_secret_key';
 

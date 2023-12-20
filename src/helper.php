@@ -58,10 +58,9 @@ if (!class_exists('WPRadarHelper')) :
 		public static function find_vulnerability_id($vuln_list, $sig, $secret_key) {
 			$vuln_id = false;
 			foreach ($vuln_list as $vuln_rec) {
-
 				$_vuln_id = $vuln_rec["id"];
 				$derived_sig = self::get_signature($_vuln_id, $secret_key);
-				if ($derived_sig == $sig) {
+				if ($derived_sig === $sig) {
 					$vuln_id = $_vuln_id;
 					break;
 				}
@@ -72,8 +71,6 @@ if (!class_exists('WPRadarHelper')) :
 		public static function get_signature($vuln_id, $secret_key) {
 			return hash('sha256', $vuln_id . 'wp_radar' . $secret_key);
 		}
-
-
 	}
 endif;
 ?>
