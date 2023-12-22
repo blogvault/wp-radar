@@ -36,35 +36,51 @@ if (!class_exists('HttpRequestSender')) :
 			return array('resp_body' => $resp_body, 'resp_code' => $resp_code);
 		}
 
-		public static function uploadFile($url, $name, $content) {
-			$curl = curl_init();
-		
-			$tempFile = tempnam(sys_get_temp_dir(), 'uploadfile');
+		public static function requestWithFileUpload($url, $query_params = array(), $post_params = array(), $headers = array(),
+				$files = array()) {
 
-			if ($tempFile === false) {
-				return false;
+			$url .= '?' . http_build_query($query_params);
+
+			$headers = array_merge(self::defaultHeaders(), $headers);
+
+			$ch = curl_init($url);
+
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+			curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+			$temp_files = array();
+			foreach ($files as $name => $content) {
+				$temp_file = tempnam(sys_get_temp_dir(), 'wp-radar-tempfile-');
+
+				if ($temp_file === false) {
+					foreach ($temp_files as $temp_file) {
+						unlink($temp_file);
+					}
+					return false;
+				}
+				$temp_files[] = $temp_file;
+
+				file_put_contents($temp_file, $content);
+
+				$post_params[$name] = new CURLFile($temp_file, 'text/plain', $name);
 			}
 
-			file_put_contents($tempFile, $content);
-		
-			$fileField = new CURLFile($tempFile, 'text/plain', $name);
-		
-			curl_setopt($curl, CURLOPT_URL, $url);
-			curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt($curl, CURLOPT_POST, true);
-			curl_setopt($curl, CURLOPT_POSTFIELDS, ['fileToUpload' => $fileField]);
-		
-			$resp_body = curl_exec($curl);
-		
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $post_params);
+
+			$resp_body = curl_exec($ch);
+
+			foreach ($temp_files as $temp_file) {
+				unlink($temp_file);
+			}
+
 			if ($resp_body === false) {
 				return false;
 			}
-		
-			$resp_code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-			curl_close($curl);
-		
-			unlink($tempFile);
-		
+			$resp_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+			curl_close($ch);
+
 			return array('resp_body' => $resp_body, 'resp_code' => $resp_code);
 		}
 	}
